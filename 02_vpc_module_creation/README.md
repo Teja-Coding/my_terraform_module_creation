@@ -1,45 +1,31 @@
-🧾 README.md
-# 🚀 Terraform AWS VPC Module
+🚀 Terraform AWS VPC Module
 
-This Terraform module provisions a **complete VPC setup** on AWS, including:
-- VPC with DNS hostnames enabled
-- Public, private, and database subnets (multi-AZ)
-- Internet Gateway
-- NAT Gateway with Elastic IP
-- Route tables and associations for each subnet type
+This Terraform module provisions a complete AWS VPC setup including public, private, and database subnets with Internet and NAT gateways.
+It’s designed for multi-environment deployments (e.g. dev, stage, prod) with consistent tagging and naming conventions.
 
-Designed for **multi-environment** setups (e.g. `dev`, `staging`, `prod`) and **tag consistency** across resources.
+🏗️ Features
 
----
+Creates a VPC with DNS hostnames enabled
 
-## 🏗️ Features
+Supports multiple Availability Zones (multi-AZ)
 
-- ✅ Creates VPC with configurable CIDR block  
-- ✅ Supports multiple availability zones  
-- ✅ Configurable public, private, and database subnets  
-- ✅ Public subnets connected to Internet Gateway  
-- ✅ Private and database subnets route traffic via NAT Gateway  
-- ✅ Automatically tags all resources using `project_name`, `environment`, and `Terraform=true`
+Creates public, private, and database subnets
 
----
+Public subnets connect to the Internet Gateway
 
-## 📦 Module Structure
+Private and database subnets route through NAT Gateway
 
+Consistent tagging with project_name, environment, and Terraform=true
 
-
+🧩 Module Structure
 .
-├── main.tf # Core resources: VPC, subnets, routes, NAT, IGW
-├── variables.tf # Input variables
-├── outputs.tf # Exported values
-├── locals.tf # Common naming and tagging logic
-└── README.md # Documentation (this file)
+├── main.tf            # Core resources: VPC, subnets, routes, NAT, IGW
+├── variables.tf       # Input variables
+├── outputs.tf         # Exported values
+├── locals.tf          # Common naming and tagging logic
+└── README.md          # Documentation (this file)
 
-
----
-
-## 🧩 Usage Example
-
-```hcl
+🧠 Usage Example
 module "vpc" {
   source = "../path_to_module"
 
@@ -47,41 +33,16 @@ module "vpc" {
   environment  = "dev"
   vpc_cidr     = "10.0.0.0/16"
 
-  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
+  public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"]
   database_subnet_cidrs = ["10.0.5.0/24", "10.0.6.0/24"]
 
-  # Optional tagging
   vpc_tags = {
     Owner = "Sri Yuva Teja"
   }
 
   igw_tags = {
     Purpose = "Internet Access"
-  }
-
-  public_subnet_tags = {
-    Tier = "Public"
-  }
-
-  private_subnet_tags = {
-    Tier = "Private"
-  }
-
-  database_subnet_tags = {
-    Tier = "Database"
-  }
-
-  public_route_table_tags = {
-    RouteType = "Public"
-  }
-
-  private_route_table_tags = {
-    RouteType = "Private"
-  }
-
-  database_route_table_tags = {
-    RouteType = "Database"
   }
 
   eip_tags = {
@@ -101,51 +62,192 @@ terraform plan
 terraform apply
 
 ⚙️ Input Variables
-Name	Type	Description	Default	Required
-vpc_cidr	string	CIDR block for the VPC	n/a	✅ Yes
-project_name	string	Name of the project	n/a	✅ Yes
-environment	string	Environment name (e.g., dev, prod)	n/a	✅ Yes
-public_subnet_cidrs	list(string)	List of CIDRs for public subnets	n/a	✅ Yes
-private_subnet_cidrs	list(string)	List of CIDRs for private subnets	n/a	✅ Yes
-database_subnet_cidrs	list(string)	List of CIDRs for database subnets	n/a	✅ Yes
-vpc_tags	map(any)	Additional tags for VPC	{}	❌ No
-igw_tags	map(any)	Additional tags for Internet Gateway	{}	❌ No
-public_subnet_tags	map(any)	Tags for public subnets	{}	❌ No
-private_subnet_tags	map(any)	Tags for private subnets	{}	❌ No
-database_subnet_tags	map(any)	Tags for database subnets	{}	❌ No
-public_route_table_tags	map(any)	Tags for public route table	{}	❌ No
-private_route_table_tags	map(any)	Tags for private route table	{}	❌ No
-database_route_table_tags	map(any)	Tags for database route table	{}	❌ No
-eip_tags	map(any)	Tags for Elastic IP	{}	❌ No
-nat_gatway_tags	map(any)	Tags for NAT Gateway	{}	❌ No
+
+vpc_cidr
+
+Type: string
+
+Description: CIDR block for the VPC
+
+Default: none
+
+Required: Yes
+
+project_name
+
+Type: string
+
+Description: Project name prefix
+
+Default: none
+
+Required: Yes
+
+environment
+
+Type: string
+
+Description: Environment name (e.g., dev, prod)
+
+Default: none
+
+Required: Yes
+
+public_subnet_cidrs
+
+Type: list(string)
+
+Description: List of CIDRs for public subnets
+
+Default: none
+
+Required: Yes
+
+private_subnet_cidrs
+
+Type: list(string)
+
+Description: List of CIDRs for private subnets
+
+Default: none
+
+Required: Yes
+
+database_subnet_cidrs
+
+Type: list(string)
+
+Description: List of CIDRs for database subnets
+
+Default: none
+
+Required: Yes
+
+vpc_tags
+
+Type: map(any)
+
+Description: Additional tags for VPC
+
+Default: {}
+
+Required: No
+
+igw_tags
+
+Type: map(any)
+
+Description: Additional tags for Internet Gateway
+
+Default: {}
+
+Required: No
+
+public_subnet_tags
+
+Type: map(any)
+
+Description: Tags for public subnets
+
+Default: {}
+
+Required: No
+
+private_subnet_tags
+
+Type: map(any)
+
+Description: Tags for private subnets
+
+Default: {}
+
+Required: No
+
+database_subnet_tags
+
+Type: map(any)
+
+Description: Tags for database subnets
+
+Default: {}
+
+Required: No
+
+public_route_table_tags
+
+Type: map(any)
+
+Description: Tags for public route table
+
+Default: {}
+
+Required: No
+
+private_route_table_tags
+
+Type: map(any)
+
+Description: Tags for private route table
+
+Default: {}
+
+Required: No
+
+database_route_table_tags
+
+Type: map(any)
+
+Description: Tags for database route table
+
+Default: {}
+
+Required: No
+
+eip_tags
+
+Type: map(any)
+
+Description: Tags for Elastic IP
+
+Default: {}
+
+Required: No
+
+nat_gatway_tags
+
+Type: map(any)
+
+Description: Tags for NAT Gateway
+
+Default: {}
+
+Required: No
+
 📤 Outputs
-Name	Description
-vpc_id	The ID of the created VPC
+
+vpc_id
+
+Description: The ID of the created VPC.
+
 🌐 Resource Summary
-Resource	Count / Purpose
-aws_vpc	1 – main VPC
-aws_internet_gateway	1 – for public subnets
-aws_subnet	multiple – public, private, and database
-aws_eip	1 – for NAT gateway
-aws_nat_gateway	1 – routes private/database subnet traffic
-aws_route_table	3 – public, private, database
-aws_route	3 – default routes for each route table
-aws_route_table_association	N – associates subnets with their route tables
-🧠 Notes
 
-Public subnets automatically map public IPs.
+VPC: Creates a main VPC with DNS hostnames enabled.
 
-NAT Gateway is deployed in the first public subnet.
+Internet Gateway: Provides external internet access.
 
-All subnets are spread across two availability zones for high availability.
+Subnets: Creates public, private, and database subnets across multiple availability zones.
 
-The locals block automatically generates:
+Elastic IP: Allocates a static IP for NAT Gateway.
 
-common_name_suffix as <project_name>-<environment>
+NAT Gateway: Routes outbound traffic from private and database subnets.
 
-Common tags for consistency.
+Route Tables: Creates separate route tables for public, private, and database subnets.
 
-🧩 Example Generated Names
+Routes: Adds default routes (0.0.0.0/0) through IGW or NAT.
+
+Associations: Associates subnets to their respective route tables.
+
+🧩 Example Resource Names
 
 If:
 
@@ -161,16 +263,29 @@ roboshop-dev-database-ap-south-1a
 roboshop-dev-nat-gateway
 roboshop-dev-public
 
+🧠 Notes
+
+Public subnets automatically map public IPs.
+
+NAT Gateway is placed in the first public subnet.
+
+The module spreads subnets across two Availability Zones for high availability.
+
+Common tags are automatically applied to all resources.
+
+Recommended to use remote backend (S3 + DynamoDB) for production.
+
 🛡️ Best Practices
 
-Use CIDRs with enough space for future scaling.
+Use CIDR ranges large enough for scaling.
 
-Deploy the NAT Gateway only in the first public subnet for cost efficiency.
+Keep NAT Gateway in one public subnet to save cost.
 
-Use terraform destroy carefully; this module creates real networking resources.
+Always use terraform plan before applying changes.
 
-Manage backend state (S3 + DynamoDB) for team usage.
+Use Terraform workspaces for environment separation (dev, stage, prod).
 
 👨‍💻 Maintainer
 
 Author: Sri Yuva Teja Manikanta
+Description: Developed for reusable, production-grade VPC provisioning in Terraform.
