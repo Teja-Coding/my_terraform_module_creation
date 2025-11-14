@@ -5,7 +5,7 @@ variable "sg_name" {
 
 variable "sg_description" {
   type = string 
-  default = {}
+  default = ""
 }
 
 variable "vpc_id" {
@@ -19,11 +19,11 @@ variable "sg_tags" {
 
 variable "project_name" {
   type = string 
-  default = {}
+  default = ""
 }
 
 variable "environment" {
   type = string 
-  default = {}
+  default = ""
 }
 
